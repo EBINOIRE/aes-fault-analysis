@@ -1,0 +1,149 @@
+rm -rf /Users/ebinouri/Documents/UNi/Master_Thesis/Enhancement/fault-injection/obj
+mkdir -p /Users/ebinouri/Documents/UNi/Master_Thesis/Enhancement/fault-injection/obj/
+/usr/local/bin/g++-13 -std=c++17 -I /usr/local/systemc-2.3.3/include/ -I /usr/local/uvm-systemc-1.0-beta4/include/ -I /Users/ebinouri/Documents/UNi/OpenSourceTools/fault-injection-framework/core/src/utils/ -I -I/Users/ebinouri/Documents/UNi/OpenSourceTools/fault-injection-framework/core/src/templates/sc_main_template.cpp -I/Users/ebinouri/Documents/UNi/Master_Thesis/Enhancement/fault-injection -I/Users/ebinouri/Documents/UNi/Master_Thesis/Enhancement/fault-injection/obj -I/Users/ebinouri/Documents/UNi/Master_Thesis/Enhancement/fault-injection/AES_systemc -I/Users/ebinouri/Documents/UNi/Master_Thesis/Enhancement/fault-injection/AES_systemc/.vscode -I/Users/ebinouri/Documents/UNi/Master_Thesis/Enhancement/fault-injection/reliability_analysis -I/Users/ebinouri/Documents/UNi/Master_Thesis/Enhancement/fault-injection/.vscode  -c sc_main.cpp -o /Users/ebinouri/Documents/UNi/Master_Thesis/Enhancement/fault-injection/obj/sc_main.cpp.o
+/usr/local/bin/g++-13 /Users/ebinouri/Documents/UNi/Master_Thesis/Enhancement/fault-injection/obj/sc_main.cpp.o -o /Users/ebinouri/Documents/UNi/Master_Thesis/Enhancement/fault-injection/obj/sc_main -L /usr/local/systemc-2.3.3/lib -L /usr/local/uvm-systemc-1.0-beta4/lib -l systemc -l uvm-systemc
+/Users/ebinouri/Documents/UNi/Master_Thesis/Enhancement/fault-injection/obj/sc_main
+UVM_INFO @ 0 s: reporter [RNTST] Running test rl_test...
+UVM_WARNING @ 0 s: rl_test.rl_env.fault_env.fault_agnt [ACTPASS:] Active or passive mode for agent 'rl_test.rl_env.fault_env.fault_agnt' has not been defined. Default behavior is active.
+UVM_WARNING @ 0 s: rl_test.rl_env.fault_env.stim_agnt [ACTPASS:] Active or passive mode for agent 'rl_test.rl_env.fault_env.stim_agnt' has not been defined. Default behavior is active.
+UVM_INFO /Users/ebinouri/Documents/UNi/Master_Thesis/Enhancement/fault-injection/reliability_analysis/rl_test.h(81) @ 0 s: rl_test [rl_test] Printing the test topology :
+------------------------------------------------------
+Name              Type                     Size  Value
+------------------------------------------------------
+rl_test           rl_test                  -     @161
+  rl_env          rl_environment           -     @213
+    fault_env     fault_environment        -     @218
+      fault_agnt  fault_agent              -     @230
+      stim_agnt   stim_agent               -     @228
+      stim_mntr   stim_monitor             -     @224
+      vir_seqr    fault_virtual_sequencer  -     @232
+    rl_scrb       rl_scoreboard            -     @220
+------------------------------------------------------
+
+Function[injectionTime_start] is greater than Function[injectionTime_end]!!
+Function[injectionTime_start] is greater than Function[injectionTime_end]!!
+Function[injectionTime_start] is greater than Function[injectionTime_end]!!
+Function[injectionTime_start] is greater than Function[injectionTime_end]!!
+Function[injectionTime_start] is greater than Function[injectionTime_end]!!
+Function[injectionTime_start] is greater than Function[injectionTime_end]!!
+Function[injectionTime_start] is greater than Function[injectionTime_end]!!
+Function[injectionTime_start] is greater than Function[injectionTime_end]!!
+Function[injectionTime_start] is greater than Function[injectionTime_end]!!
+signal Name[Fdriver]: generic_testbench.dut__f0.a.signal_14130x7fe5e57568e0
+UVM_INFO /Users/ebinouri/Documents/UNi/OpenSourceTools/fault-injection-framework/core/src/uvm_objects/uvm_components/fault_driver.h(196) @ 0 s: rl_test.rl_env.fault_env.fault_agnt.fault_drvr [placeholder for fault_driver ID] ## DRV: New Fault is injected: sbox_5_1_: bit_flip 1
+UVM_INFO /Users/ebinouri/Documents/UNi/OpenSourceTools/fault-injection-framework/core/src/uvm_objects/uvm_transactions/fault_sequence_lib.h(69) @ 0 s: rl_test.rl_env.fault_env.fault_agnt.fault_seqr@@object_2 [fault_base_sequence] [Fault_list] New request created @ 0 s
+sbox_5_1_ : 1
+
+signal Name[Fdriver]: generic_testbench.dut__f1.a.signal_15410x7fe5c815cce0
+UVM_INFO /Users/ebinouri/Documents/UNi/OpenSourceTools/fault-injection-framework/core/src/uvm_objects/uvm_components/fault_driver.h(196) @ 0 s: rl_test.rl_env.fault_env.fault_agnt.fault_drvr [placeholder for fault_driver ID] ## DRV: New Fault is injected: sbox_5_2_: bit_flip 1
+UVM_INFO /Users/ebinouri/Documents/UNi/OpenSourceTools/fault-injection-framework/core/src/uvm_objects/uvm_transactions/fault_sequence_lib.h(69) @ 0 s: rl_test.rl_env.fault_env.fault_agnt.fault_seqr@@object_2 [fault_base_sequence] [Fault_list] New request created @ 0 s
+sbox_5_2_ : 1
+
+signal Name[Fdriver]: generic_testbench.dut__f2.a.signal_16690x7fe5ab7630e0
+UVM_INFO /Users/ebinouri/Documents/UNi/OpenSourceTools/fault-injection-framework/core/src/uvm_objects/uvm_components/fault_driver.h(196) @ 0 s: rl_test.rl_env.fault_env.fault_agnt.fault_drvr [placeholder for fault_driver ID] ## DRV: New Fault is injected: sbox_5_3_: bit_flip 1
+UVM_INFO /Users/ebinouri/Documents/UNi/OpenSourceTools/fault-injection-framework/core/src/uvm_objects/uvm_transactions/fault_sequence_lib.h(69) @ 0 s: rl_test.rl_env.fault_env.fault_agnt.fault_seqr@@object_2 [fault_base_sequence] [Fault_list] New request created @ 0 s
+sbox_5_3_ : 1
+
+signal Name[Fdriver]: generic_testbench.dut__f3.a.signal_17970x7fe58c9694e0
+UVM_INFO /Users/ebinouri/Documents/UNi/OpenSourceTools/fault-injection-framework/core/src/uvm_objects/uvm_components/fault_driver.h(196) @ 0 s: rl_test.rl_env.fault_env.fault_agnt.fault_drvr [placeholder for fault_driver ID] ## DRV: New Fault is injected: sbox_5_4_: bit_flip 1
+UVM_INFO /Users/ebinouri/Documents/UNi/OpenSourceTools/fault-injection-framework/core/src/uvm_objects/uvm_transactions/fault_sequence_lib.h(69) @ 0 s: rl_test.rl_env.fault_env.fault_agnt.fault_seqr@@object_2 [fault_base_sequence] [Fault_list] New request created @ 0 s
+sbox_5_4_ : 1
+
+signal Name[Fdriver]: generic_testbench.dut__f4.a.signal_19250x7fe550c6f8e0
+UVM_INFO /Users/ebinouri/Documents/UNi/OpenSourceTools/fault-injection-framework/core/src/uvm_objects/uvm_components/fault_driver.h(196) @ 0 s: rl_test.rl_env.fault_env.fault_agnt.fault_drvr [placeholder for fault_driver ID] ## DRV: New Fault is injected: sbox_5_5_: bit_flip 1
+UVM_INFO /Users/ebinouri/Documents/UNi/OpenSourceTools/fault-injection-framework/core/src/uvm_objects/uvm_transactions/fault_sequence_lib.h(69) @ 0 s: rl_test.rl_env.fault_env.fault_agnt.fault_seqr@@object_2 [fault_base_sequence] [Fault_list] New request created @ 0 s
+sbox_5_5_ : 1
+
+signal Name[Fdriver]: generic_testbench.dut__f5.a.signal_20530x7fe532c75ce0
+UVM_INFO /Users/ebinouri/Documents/UNi/OpenSourceTools/fault-injection-framework/core/src/uvm_objects/uvm_components/fault_driver.h(196) @ 0 s: rl_test.rl_env.fault_env.fault_agnt.fault_drvr [placeholder for fault_driver ID] ## DRV: New Fault is injected: sbox_5_6_: bit_flip 1
+UVM_INFO /Users/ebinouri/Documents/UNi/OpenSourceTools/fault-injection-framework/core/src/uvm_objects/uvm_transactions/fault_sequence_lib.h(69) @ 0 s: rl_test.rl_env.fault_env.fault_agnt.fault_seqr@@object_2 [fault_base_sequence] [Fault_list] New request created @ 0 s
+sbox_5_6_ : 1
+
+signal Name[Fdriver]: generic_testbench.dut__f6.a.signal_21810x7fe514e7c0e0
+UVM_INFO /Users/ebinouri/Documents/UNi/OpenSourceTools/fault-injection-framework/core/src/uvm_objects/uvm_components/fault_driver.h(196) @ 0 s: rl_test.rl_env.fault_env.fault_agnt.fault_drvr [placeholder for fault_driver ID] ## DRV: New Fault is injected: sbox_5_7_: bit_flip 1
+UVM_INFO /Users/ebinouri/Documents/UNi/OpenSourceTools/fault-injection-framework/core/src/uvm_objects/uvm_transactions/fault_sequence_lib.h(69) @ 0 s: rl_test.rl_env.fault_env.fault_agnt.fault_seqr@@object_2 [fault_base_sequence] [Fault_list] New request created @ 0 s
+sbox_5_7_ : 1
+
+signal Name[Fdriver]: generic_testbench.dut__f7.a.signal_23090x7fe4f68824e0
+UVM_INFO /Users/ebinouri/Documents/UNi/OpenSourceTools/fault-injection-framework/core/src/uvm_objects/uvm_components/fault_driver.h(196) @ 0 s: rl_test.rl_env.fault_env.fault_agnt.fault_drvr [placeholder for fault_driver ID] ## DRV: New Fault is injected: sbox_5_8_: bit_flip 1
+UVM_INFO /Users/ebinouri/Documents/UNi/OpenSourceTools/fault-injection-framework/core/src/uvm_objects/uvm_transactions/fault_sequence_lib.h(69) @ 0 s: rl_test.rl_env.fault_env.fault_agnt.fault_seqr@@object_2 [fault_base_sequence] [Fault_list] New request created @ 0 s
+sbox_5_8_ : 1
+
+signal Name[Fdriver]: generic_testbench.dut__f8.a.signal_24370x7fe4d81888e0
+UVM_INFO /Users/ebinouri/Documents/UNi/OpenSourceTools/fault-injection-framework/core/src/uvm_objects/uvm_components/fault_driver.h(196) @ 0 s: rl_test.rl_env.fault_env.fault_agnt.fault_drvr [placeholder for fault_driver ID] ## DRV: New Fault is injected: sbox_5_9_: bit_flip 1
+UVM_INFO /Users/ebinouri/Documents/UNi/OpenSourceTools/fault-injection-framework/core/src/uvm_objects/uvm_transactions/fault_sequence_lib.h(69) @ 0 s: rl_test.rl_env.fault_env.fault_agnt.fault_seqr@@object_2 [fault_base_sequence] [Fault_list] New request created @ 0 s
+sbox_5_9_ : 1
+
+ BP[FAULT_DRIVER]: orig value: 1
+ BP[FAULT_DRIVER]: XORed value: 0
+ BP[FAULT_DRIVER]: orig value: 1
+ BP[FAULT_DRIVER]: XORed value: 0
+ BP[FAULT_DRIVER]: orig value: 0
+ BP[FAULT_DRIVER]: XORed value: 1
+ BP[FAULT_DRIVER]: orig value: 0
+ BP[FAULT_DRIVER]: XORed value: 1
+ BP[FAULT_DRIVER]: orig value: 1
+ BP[FAULT_DRIVER]: XORed value: 0
+ BP[FAULT_DRIVER]: orig value: 0
+ BP[FAULT_DRIVER]: XORed value: 1
+ BP[FAULT_DRIVER]: orig value: 1
+ BP[FAULT_DRIVER]: XORed value: 0
+ BP[FAULT_DRIVER]: orig value: 1
+ BP[FAULT_DRIVER]: XORed value: 0
+ BP[FAULT_DRIVER]: orig value: 0
+ BP[FAULT_DRIVER]: XORed value: 1
+-------------- SCB_REPORT START @20 ns
+Golden output: encrypted 	 of 		01101001110001001110000011011000011010100111101100000100001100001101100011001101101101111000000001110000101101001100010101011010
+Output Name: 
+encrypted_f0 	 of 		01001100010101011000111001100001000011000111001100100010100011110001110101101010110000001111101011010100111000001011100010110111
+		 has the difference of : 69
+Output Name: 
+encrypted_f1 	 of 		00001011001010010010001111001001011101111011001100111110010000011101000000011011000100011001101100110101001111111001111101110001
+		 has the difference of : 59
+Output Name: 
+encrypted_f2 	 of 		00111111011100001010011101100101110011010101001010010001111011110001100100110010100100000101110000110011101010000010011011110111
+		 has the difference of : 73
+Output Name: 
+encrypted_f3 	 of 		01011011111001100100010110000011011011101111001100100110000111000110110010101010001010110000110011110101000101001010100010111011
+		 has the difference of : 52
+Output Name: 
+encrypted_f4 	 of 		11110110011101100010010110111010111100100010011111011000100010111100101011110111001111101010111100100111001111100100111010100101
+		 has the difference of : 69
+Output Name: 
+encrypted_f5 	 of 		00101010100010110011011101101010110011011100110000110011111110000010110101010111010101110001000010111100011100011011111110110000
+		 has the difference of : 70
+Output Name: 
+encrypted_f6 	 of 		01010000000111100100001011111110010000110111111101110101010001101100101111000011011101100010110010111100101010010011100000011000
+		 has the difference of : 58
+Output Name: 
+encrypted_f7 	 of 		11011011011101100000100011011010000000001101000100001101100011010000110110110100011111011000010000011100011011101010010100111100
+		 has the difference of : 59
+Output Name: 
+encrypted_f8 	 of 		10000000110001001110000011011000011010100111101100000100101110101101100011001101000100111000000001110000100010101100010101011010
+		 has the difference of : 16
+-------------- SCB_REPORT END
+UVM_INFO /Users/ebinouri/Documents/UNi/Master_Thesis/Enhancement/fault-injection/reliability_analysis/rl_scoreboard.h(153) @ 330 ns: rl_test.rl_env.rl_scrb [rl_scoreboard] Reporting scoreboard information...
+-----------------------------------
+Name     Type           Size  Value
+-----------------------------------
+rl_scrb  rl_scoreboard  -     @220
+-----------------------------------
+
+UVM_INFO /Users/ebinouri/Documents/UNi/Master_Thesis/Enhancement/fault-injection/reliability_analysis/rl_test.h(116) @ 330 ns: rl_test [rl_test] ** UVM TEST PASSED **
+UVM_INFO ../../../src/uvmsc/report/uvm_default_report_server.cpp(667) @ 330 ns: reporter [UVM/REPORT/SERVER] 
+--- UVM Report Summary ---
+
+** Report counts by severity
+UVM_INFO      :  22
+UVM_WARNING   :   2
+UVM_ERROR     :   0
+UVM_FATAL     :   0
+** Report counts by id
+[ACTPASS:]              2
+[RNTST]                 1
+[fault_base_sequence]   9
+[placeholder for fault_driver ID]                                      9
+[rl_scoreboard]         1
+[rl_test]               2
+
+UVM_INFO @ 330 ns: reporter [FINISH] UVM-SystemC phasing completed; simulation finished
