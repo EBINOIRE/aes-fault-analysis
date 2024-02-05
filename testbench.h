@@ -6,18 +6,18 @@
 #include "/Users/ebinouri/Documents/UNi/OpenSourceTools/fault-injection-framework/core/src/virtual_interface/virtual_interface.h"
 #include "/Users/ebinouri/Documents/UNi/OpenSourceTools/fault-injection-framework/core/src/flt_registry/fault_registry.h"
 // placeholder for design header file
-#include "/Users/ebinouri/Documents/UNi/Master_Thesis/Enhancement/fault-injection/AES_systemc/AES.h"
+#include "./AES_systemc/AES.h"
 
 using namespace sc_core;
 
 #define SENSITIVITY(X, Y) sensitive << X[Y]
-
+#define NUMBER_OF_DUT_INSTANCES 9
 
 SC_MODULE( testbench ) {
 
     // placeholder for DUT pointer definition
     AES* dut_ref;
-    AES* dut__f[9];
+    AES* dut__f[NUMBER_OF_DUT_INSTANCES];
     
     // Input Ports
     sc_signal<sc_logic, SC_MANY_WRITERS> enable;
@@ -31,14 +31,14 @@ SC_MODULE( testbench ) {
     sc_signal<sc_logic, SC_MANY_WRITERS> decrypted128[128];
     sc_signal<sc_logic, SC_MANY_WRITERS> encrypted128[128];
     
-    sc_signal<sc_logic, SC_MANY_WRITERS> e128_f[9];
-    sc_signal<sc_logic, SC_MANY_WRITERS> d128_f[9];
-    sc_signal<sc_logic, SC_MANY_WRITERS> decrypted128_f[9][128];
-    sc_signal<sc_logic, SC_MANY_WRITERS> encrypted128_f[9][128];
+    sc_signal<sc_logic, SC_MANY_WRITERS> e128_f[NUMBER_OF_DUT_INSTANCES];
+    sc_signal<sc_logic, SC_MANY_WRITERS> d128_f[NUMBER_OF_DUT_INSTANCES];
+    sc_signal<sc_logic, SC_MANY_WRITERS> decrypted128_f[NUMBER_OF_DUT_INSTANCES][128];
+    sc_signal<sc_logic, SC_MANY_WRITERS> encrypted128_f[NUMBER_OF_DUT_INSTANCES][128];
     
     // Intermediate Signals
     sc_core::sc_signal<sc_dt::sc_lv<128>, sc_core::SC_MANY_WRITERS> encrypted_lv;
-    sc_core::sc_signal<sc_dt::sc_lv<128>, sc_core::SC_MANY_WRITERS> encrypted_lv_f[9];
+    sc_core::sc_signal<sc_dt::sc_lv<128>, sc_core::SC_MANY_WRITERS> encrypted_lv_f[NUMBER_OF_DUT_INSTANCES];
 
     virtual_interface* vif;
     std::string test_spec_file = "/Users/ebinouri/Documents/UNi/Master_Thesis/Enhancement/fault-injection/test_spec.json";
@@ -82,7 +82,7 @@ SC_MODULE( testbench ) {
               dut_ref->encrypted128[i].bind(encrypted128[i]);
             }
 
-        for (int j = 0; j < 9; j++){
+        for (int j = 0; j < NUMBER_OF_DUT_INSTANCES; j++){
 
           dut__f[j] = new AES(("dut__f"+std::to_string(static_cast<unsigned long long>(j))).c_str());
               dut__f[j]->enable(enable);
@@ -115,26 +115,28 @@ SC_MODULE( testbench ) {
             
         vif->set_reference_to_signal<sc_core::sc_signal<sc_dt::sc_lv<128>, sc_core::SC_MANY_WRITERS>>("encrypted", encrypted_lv);
         //********
-        for (int j = 0; j < 9; j++){
+        for (int j = 0; j < NUMBER_OF_DUT_INSTANCES; j++){
           vif->set_reference_to_signal<sc_core::sc_signal<sc_dt::sc_lv<128>, sc_core::SC_MANY_WRITERS>>(("encrypted_f"+std::to_string(static_cast<unsigned long long>(j))).c_str(), encrypted_lv_f[j]);
         }
 
-        flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[0]->a->loop_1__er->afterShiftRows[9], "sbox_5_1_");
-        flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[1]->a->loop_2__er->afterShiftRows[9], "sbox_5_2_");
-        flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[2]->a->loop_3__er->afterShiftRows[9], "sbox_5_3_");
-        flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[3]->a->loop_4__er->afterShiftRows[9], "sbox_5_4_");
-        flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[4]->a->loop_5__er->afterShiftRows[9], "sbox_5_5_");
-        flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[5]->a->loop_6__er->afterShiftRows[9], "sbox_5_6_");
-        flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[6]->a->loop_7__er->afterShiftRows[9], "sbox_5_7_");
-        flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[7]->a->loop_8__er->afterShiftRows[9], "sbox_5_8_");
-        flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[8]->a->loop_9__er->afterShiftRows[9], "sbox_5_9_");
+        for (int j = 0; j < NUMBER_OF_DUT_INSTANCES; j++){
+        }
+        flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[0]->a->er[0]->afterShiftRows[NUMBER_OF_DUT_INSTANCES], "sbox_5_1_");
+        flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[1]->a->er[1]->afterShiftRows[NUMBER_OF_DUT_INSTANCES], "sbox_5_2_");
+        flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[2]->a->er[2]->afterShiftRows[NUMBER_OF_DUT_INSTANCES], "sbox_5_3_");
+        flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[3]->a->er[3]->afterShiftRows[NUMBER_OF_DUT_INSTANCES], "sbox_5_4_");
+        flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[4]->a->er[4]->afterShiftRows[NUMBER_OF_DUT_INSTANCES], "sbox_5_5_");
+        flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[5]->a->er[5]->afterShiftRows[NUMBER_OF_DUT_INSTANCES], "sbox_5_6_");
+        flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[6]->a->er[6]->afterShiftRows[NUMBER_OF_DUT_INSTANCES], "sbox_5_7_");
+        flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[7]->a->er[7]->afterShiftRows[NUMBER_OF_DUT_INSTANCES], "sbox_5_8_");
+        flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[8]->a->er[8]->afterShiftRows[NUMBER_OF_DUT_INSTANCES], "sbox_5_9_");
         
         // group signals  
         // placeholder for categorizing signals
         // vif->mark_as_input("ci");
         vif->mark_as_goldenOutput("encrypted");
         //********
-        for (int j = 0; j < 9; j++){
+        for (int j = 0; j < NUMBER_OF_DUT_INSTANCES; j++){
           vif->mark_as_faultyOutput(("encrypted_f"+std::to_string(static_cast<unsigned long long>(j))).c_str());
         }
 
@@ -160,7 +162,7 @@ SC_MODULE( testbench ) {
 
         SC_THREAD(encrypted_f1_assignment);
             // dont_initialize();
-            for (int j = 0; j < 9; j++){
+            for (int j = 0; j < NUMBER_OF_DUT_INSTANCES; j++){
               for(int i = 0; i < 128; i++){
                 SENSITIVITY(encrypted128_f[j], i);
               }
@@ -173,7 +175,7 @@ SC_MODULE( testbench ) {
           sensitive << encrypted_lv;
         SC_THREAD(notify_starting_flt_mntr); 
           //********
-          for(int i = 0; i < 9; i++){
+          for(int i = 0; i < NUMBER_OF_DUT_INSTANCES; i++){
             SENSITIVITY(encrypted_lv_f, i);
           }
           // sensitive <<  dut__f[0]->a->loop_9__er->in[5]
@@ -224,7 +226,7 @@ SC_MODULE( testbench ) {
     void encrypted_f1_assignment(void){ 
         while(true) {
             sc_lv<128> encrypted_lv_f_temp;
-            for (int j = 0; j < 9; j++){
+            for (int j = 0; j < NUMBER_OF_DUT_INSTANCES; j++){
               for (int i = 0; i < 128; i++){
                   encrypted_lv_f_temp[i] = encrypted128_f[j][i].read();
               }
