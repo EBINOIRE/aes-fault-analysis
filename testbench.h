@@ -41,7 +41,7 @@ SC_MODULE( testbench ) {
     sc_core::sc_signal<sc_dt::sc_lv<128>, sc_core::SC_MANY_WRITERS> encrypted_lv_f[NUMBER_OF_DUT_INSTANCES];
 
     virtual_interface* vif;
-    std::string test_spec_file = "/Users/ebinouri/Documents/UNi/Master_Thesis/Enhancement/fault-injection/test_spec.json";
+    std::string test_spec_file = "./test_spec.json";
     fault_registry* flt_reg;
 
     sc_core::sc_event start_analysis;
@@ -114,22 +114,14 @@ SC_MODULE( testbench ) {
             // placeholder for registration of signal in fault registry
             
         vif->set_reference_to_signal<sc_core::sc_signal<sc_dt::sc_lv<128>, sc_core::SC_MANY_WRITERS>>("encrypted", encrypted_lv);
-        //********
+        
         for (int j = 0; j < NUMBER_OF_DUT_INSTANCES; j++){
           vif->set_reference_to_signal<sc_core::sc_signal<sc_dt::sc_lv<128>, sc_core::SC_MANY_WRITERS>>(("encrypted_f"+std::to_string(static_cast<unsigned long long>(j))).c_str(), encrypted_lv_f[j]);
         }
 
         for (int j = 0; j < NUMBER_OF_DUT_INSTANCES; j++){
+          flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[j]->a->er[j]->afterShiftRows[NUMBER_OF_DUT_INSTANCES], ("sbox_5_dut_"+std::to_string(static_cast<unsigned long long>(j))+"_").c_str());
         }
-        flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[0]->a->er[0]->afterShiftRows[NUMBER_OF_DUT_INSTANCES], "sbox_5_1_");
-        flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[1]->a->er[1]->afterShiftRows[NUMBER_OF_DUT_INSTANCES], "sbox_5_2_");
-        flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[2]->a->er[2]->afterShiftRows[NUMBER_OF_DUT_INSTANCES], "sbox_5_3_");
-        flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[3]->a->er[3]->afterShiftRows[NUMBER_OF_DUT_INSTANCES], "sbox_5_4_");
-        flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[4]->a->er[4]->afterShiftRows[NUMBER_OF_DUT_INSTANCES], "sbox_5_5_");
-        flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[5]->a->er[5]->afterShiftRows[NUMBER_OF_DUT_INSTANCES], "sbox_5_6_");
-        flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[6]->a->er[6]->afterShiftRows[NUMBER_OF_DUT_INSTANCES], "sbox_5_7_");
-        flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[7]->a->er[7]->afterShiftRows[NUMBER_OF_DUT_INSTANCES], "sbox_5_8_");
-        flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[8]->a->er[8]->afterShiftRows[NUMBER_OF_DUT_INSTANCES], "sbox_5_9_");
         
         // group signals  
         // placeholder for categorizing signals

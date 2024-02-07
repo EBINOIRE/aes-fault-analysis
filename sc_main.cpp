@@ -24,7 +24,7 @@
 #include <uvm>
 #include "testbench.h"
 // placeholder for UVM Test file
-#include "/Users/ebinouri/Documents/UNi/Master_Thesis/Enhancement/fault-injection/reliability_analysis/rl_test.h"
+#include "./reliability_analysis/rl_test.h"
 
 int sc_main(int, char*[])
 {

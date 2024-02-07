@@ -198,56 +198,69 @@ bool rl_scoreboard::analyze_output(void)
   std::ostringstream req_msg;
   
   std::cout<< "-------------- SCB_REPORT START @" << sc_core::sc_time_stamp() << std::endl; 
-  for (auto i = goldenOutput_list.begin(); i != goldenOutput_list.end(); i++) 
-      cout << "Golden output: " << i->first << " \t of \t\t" << std::hex << i->second << endl;
+  // for (auto i = goldenOutput_list.begin(); i != goldenOutput_list.end(); i++) 
+  //     cout << "Golden output: " << i->first << " \t of \t\t" << std::hex << i->second << endl;
   
   std::string goldenOutput_name = goldenOutput_list.begin()->first;
   std::string goldenOutput_value = goldenOutput_list.begin()->second;
 
+  // cout << "Fault list: " << endl;
+  // int j = 0;
   // for (auto i = fault_list.begin(); i != fault_list.end(); i++) {
-  //     cout << "Fault list: " << "\n" << i->first << " \t\t\t" << std::hex << i->second << endl;
+  //     j = j + 1;
+  //     cout << "\t" << j << ":\t" << i->first << "\t\t" << std::hex << i->second << endl;
 
   // }
 
+  // for (auto i = faultyOutput_list.begin(); i != faultyOutput_list.end(); i++) {
+  //   cout << "Output Name: " << "\n" << i->first << " \t of \t\t" << std::hex << i->second << endl;
+  //   int diff_bit = 0;
+  //   for (int k=0; k < 128; k++){
+  //     if (goldenOutput_value[k] != i->second[k])
+  //       diff_bit = diff_bit + 1;
+  //   }
+
+  //   if (diff_bit != 0){
+  //     cout << "\t\t has the difference of : "<< std::dec << diff_bit << std::endl;
+  //   }
+  // }
+
+    std::cout << "+--------------+------------------------------+---------------+----------------+-------------+" << std::endl;
+    std::cout << "| DUT Name     |         Faulty Sig           |  Difference   |   Value (Bin)                        |" << std::endl;
+    std::cout << "+--------------+------------------------------------------------+-------------+" << std::endl;
+    std::cout << "| Golden Out   |                              |" << "       0       | " << goldenOutput_value << std::endl;
+    std::cout << "+--------------+------------------------------------------------+-------------+" << std::endl;
+  
+  int dut_enumerate = 0;
+
   for (auto i = faultyOutput_list.begin(); i != faultyOutput_list.end(); i++) {
-    cout << "Output Name: " << "\n" << i->first << " \t of \t\t" << std::hex << i->second << endl;
+    std::string fault_signal_name = "";
     int diff_bit = 0;
     for (int k=0; k < 128; k++){
       if (goldenOutput_value[k] != i->second[k])
         diff_bit = diff_bit + 1;
     }
-
-    if (diff_bit != 0){
-      cout << "\t\t has the difference of : "<< std::dec << diff_bit << std::endl;
+    for (auto& flt_sig: fault_list){
+      if (flt_sig.first.find(("dut_" + std::to_string(static_cast<unsigned long long>(dut_enumerate))).c_str()) != std::string::npos)
+        fault_signal_name = flt_sig.first;
     }
+    int fault_signal_name_size = fault_signal_name.size();
+    for (int p = 0; p < (30 - fault_signal_name_size); p++){
+      fault_signal_name.append(" ");
+    }
+
+    if (diff_bit < 10)
+      std::cout << "| " << i->first << " |" << fault_signal_name << "|       " << std::dec << diff_bit << "       | " << i->second << std::endl;
+    else if (diff_bit < 100)
+      std::cout << "| " << i->first << " |" << fault_signal_name << "|       " << std::dec << diff_bit << "      | " << i->second << std::endl;
+    else if (diff_bit < 1000)
+      std::cout << "| " << i->first << " |" << fault_signal_name << "|      " << std::dec << diff_bit << "      | " << i->second << std::endl;
+    else
+      std::cout << "| " << i->first << " |" << fault_signal_name << "|      " << std::dec << diff_bit << "      | " << i->second << std::endl;
+    std::cout << "+--------------+--------------------------------------------------------------+" << std::endl;
+
+    dut_enumerate = dut_enumerate + 1;
   }
-  // trans_collected = flt_reg->get_faultableGDI("generic_testbench.dut_ref.sayacInstructionModuleEmb.PCregister");
-  // std::string pc_golden_value = (static_cast<sc_signal<sc_dt::sc_lv<16>, SC_MANY_WRITERS>*>(trans_collected.ptr))->read().to_string();
-  // std::cout << "I am here ..............PCregister" << std::endl;
-  
-
-  // if (pc_golden_value != pc_faulty_value){
-  //   std::cout<< "Golden PC: " << pc_golden_value << std::endl; 
-  //   std::cout<< "Faulty PC: " << pc_faulty_value << std::endl; 
-  //   crash += 1;
-  //   std::cout<< "    " << "RESULT: CRASH" << std::endl;
-  // }
-  // else if ((addrBus_golden_value != addrBus_faulty_value) || (dataBus_golden_value != dataBus_faulty_value)){
-  //   std::cout<< "Golden Data Bus   : " << dataBus_golden_value << std::endl; 
-  //   std::cout<< "Faulty Data Bus   : " << dataBus_faulty_value << std::endl; 
-  //   std::cout<< "Golden Address Bus: " << addrBus_golden_value << std::endl; 
-  //   std::cout<< "Faulty Address Bus: " << addrBus_faulty_value << std::endl; 
-  //   sdc += 1;
-  //   std::cout<< "    " << "RESULT: SDC" << std::endl;
-  // }
-  // else {
-  //   std::cout<< "PC         : " << pc_golden_value << std::endl; 
-  //   std::cout<< "Data Bus   : " << dataBus_golden_value << std::endl; 
-  //   std::cout<< "Address Bus: " << addrBus_golden_value << std::endl; 
-
-  //   benign += 1;
-  //   std::cout<< "    " << "RESULT: BENIGN" << std::endl;
-  // }
 
   std::cout<< "-------------- SCB_REPORT END" << std::endl; 
 
