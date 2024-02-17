@@ -16,6 +16,7 @@
         "set": "cpp",
         "unordered_map": "cpp",
         "unordered_set": "cpp",
-        "format": "cpp"
+        "format": "cpp",
+        "iostream": "cpp"
     }
 }

@@ -33,7 +33,16 @@ int sc_main(int, char*[])
                                   SC_DO_NOTHING);
   sc_report_handler::set_actions (SC_ID_LOGIC_X_TO_BOOL_,
                                   SC_DO_NOTHING);
-  
+
+  sc_core::sc_trace_file* tf = sc_core::sc_create_vcd_trace_file("traces_sc");
+  // sc_core::sc_trace(tf, generic_testbench->aes_module->enable, "enable");
+  // for(int i=0; i < 128; i++)
+  //   sc_core::sc_trace(tf, generic_testbench->dut__f[0]->a->er[0]->afterSubBytes[i], "er_0->afterSubBytes");
+  // for(int i=0; i < 128; i++)
+  //   sc_core::sc_trace(tf, generic_testbench->dut__f[0]->a->er[0]->afterShiftRows[i], "er_0->afterShiftRows");
+  // for(int i=0; i < 128; i++)
+  //   sc_core::sc_trace(tf, generic_testbench->dut__f[0]->a->er[0]->afterMixColumns[i], "er_0->afterMixColumns");
+
   // Run test
   // placeholder for UVM Test module name
     uvm::run_test("rl_test");

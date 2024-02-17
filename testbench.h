@@ -11,7 +11,15 @@
 using namespace sc_core;
 
 #define SENSITIVITY(X, Y) sensitive << X[Y]
-#define NUMBER_OF_DUT_INSTANCES 9
+
+#define NUMBER_OF_ROUNDS 9
+#define NUMBER_OF_TRANSFORMATION 3
+#define NUMBER_OF_SELECTED_BITS 128
+#define NUMBER_OF_DUT_INSTANCES NUMBER_OF_ROUNDS
+// #define NUMBER_OF_DUT_INSTANCES NUMBER_OF_ROUNDS*NUMBER_OF_TRANSFORMATION*NUMBER_OF_SELECTED_BITS
+
+enum transformation {   SUBBYTES = 0, SHIFTROWS = 1, MIXCOLUMNS = 2};
+// enum transformation {   SUBBYTES = 0, SHIFTROWS = 1, MIXCOLUMNS = 2, ADDROUNDKEY = 3};
 
 SC_MODULE( testbench ) {
 
@@ -114,13 +122,39 @@ SC_MODULE( testbench ) {
             // placeholder for registration of signal in fault registry
             
         vif->set_reference_to_signal<sc_core::sc_signal<sc_dt::sc_lv<128>, sc_core::SC_MANY_WRITERS>>("encrypted", encrypted_lv);
-        
-        for (int j = 0; j < NUMBER_OF_DUT_INSTANCES; j++){
-          vif->set_reference_to_signal<sc_core::sc_signal<sc_dt::sc_lv<128>, sc_core::SC_MANY_WRITERS>>(("encrypted_f"+std::to_string(static_cast<unsigned long long>(j))).c_str(), encrypted_lv_f[j]);
-        }
 
         for (int j = 0; j < NUMBER_OF_DUT_INSTANCES; j++){
-          flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[j]->a->er[j]->afterShiftRows[NUMBER_OF_DUT_INSTANCES], ("sbox_5_dut_"+std::to_string(static_cast<unsigned long long>(j))+"_").c_str());
+          vif->set_reference_to_signal<sc_core::sc_signal<sc_dt::sc_lv<128>, sc_core::SC_MANY_WRITERS>>(("encrypted_dut_"+std::to_string(static_cast<unsigned long long>(j))+"_").c_str(), encrypted_lv_f[j]);
+        }
+
+        int dut_iter = 0;
+        int bit_iter = 0;
+        // Adding faulty signals
+        for (int round_iter = 0; round_iter < NUMBER_OF_ROUNDS; round_iter++){
+          for (int transformation_iter = SUBBYTES; transformation_iter < MIXCOLUMNS + 1; transformation_iter = transformation_iter + 1){
+            if (transformation_iter == SUBBYTES){
+              for (int bit_iter = 0; bit_iter < NUMBER_OF_SELECTED_BITS; bit_iter++){
+                flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[dut_iter]->a->er[round_iter]->afterSubBytes[bit_iter], ("subbyte__r_"+std::to_string(static_cast<unsigned long long>(round_iter))+"__bit_"+std::to_string(static_cast<unsigned long long>(bit_iter))+"__dut_"+std::to_string(static_cast<unsigned long long>(dut_iter))+"_").c_str());
+                // dut_iter = dut_iter + 1;
+              }
+            } else if (transformation_iter == SHIFTROWS){
+              for (int bit_iter = 0; bit_iter < NUMBER_OF_SELECTED_BITS; bit_iter++){
+                flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[dut_iter]->a->er[round_iter]->afterShiftRows[bit_iter], ("shiftrow__r_"+std::to_string(static_cast<unsigned long long>(round_iter))+"__bit_"+std::to_string(static_cast<unsigned long long>(bit_iter))+"__dut_"+std::to_string(static_cast<unsigned long long>(dut_iter))+"_").c_str());
+                // dut_iter = dut_iter + 1;
+              }
+            } else if (transformation_iter == MIXCOLUMNS){
+              for (int bit_iter = 0; bit_iter < NUMBER_OF_SELECTED_BITS; bit_iter++){
+                flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[dut_iter]->a->er[round_iter]->afterMixColumns[bit_iter], ("mixcolumn__r_"+std::to_string(static_cast<unsigned long long>(round_iter))+"__bit_"+std::to_string(static_cast<unsigned long long>(bit_iter))+"__dut_"+std::to_string(static_cast<unsigned long long>(dut_iter))+"_").c_str());
+                // dut_iter = dut_iter + 1;
+              }
+            // } else if (transformation_iter == ADDROUNDKEY){
+              // for (int bit_iter = 0; bit_iter < NUMBER_OF_SELECTED_BITS; bit_iter++){
+              //   flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[dut_iter]->a->er[round_iter]->afterAddroundKey[bit_iter*20], ("addroundkey__r_"+std::to_string(static_cast<unsigned long long>(round_iter))+"__bit_"+std::to_string(static_cast<unsigned long long>(bit_iter*20))+"__dut_"+std::to_string(static_cast<unsigned long long>(dut_iter))+"_").c_str());
+              //   // dut_iter = dut_iter + 1;
+              // }
+            }
+          }
+                dut_iter = dut_iter + 1;
         }
         
         // group signals  
@@ -129,7 +163,7 @@ SC_MODULE( testbench ) {
         vif->mark_as_goldenOutput("encrypted");
         //********
         for (int j = 0; j < NUMBER_OF_DUT_INSTANCES; j++){
-          vif->mark_as_faultyOutput(("encrypted_f"+std::to_string(static_cast<unsigned long long>(j))).c_str());
+          vif->mark_as_faultyOutput(("encrypted_dut_"+std::to_string(static_cast<unsigned long long>(j))+"_").c_str());
         }
 
         
@@ -152,7 +186,7 @@ SC_MODULE( testbench ) {
             SENSITIVITY(encrypted128, i);
           }
 
-        SC_THREAD(encrypted_f1_assignment);
+        SC_THREAD(encrypted_faulty_assignment);
             // dont_initialize();
             for (int j = 0; j < NUMBER_OF_DUT_INSTANCES; j++){
               for(int i = 0; i < 128; i++){
@@ -164,30 +198,33 @@ SC_MODULE( testbench ) {
         //     sensitive << w_lv;
 
         SC_THREAD(notify_starting_an_event); 
-          sensitive << encrypted_lv;
+          // sensitive << encrypted_lv;
         SC_THREAD(notify_starting_flt_mntr); 
-          //********
           for(int i = 0; i < NUMBER_OF_DUT_INSTANCES; i++){
             SENSITIVITY(encrypted_lv_f, i);
           }
-          // sensitive <<  dut__f[0]->a->loop_9__er->in[5]
-          //           <<  dut__f[1]->a->loop_1__er->in[5]
-          //           <<  dut__f[2]->a->loop_2__er->in[5]
-          //           <<  dut__f[3]->a->loop_3__er->in[5]
-          //           <<  dut__f[4]->a->loop_4__er->in[5]
-          //           <<  dut__f[5]->a->loop_5__er->in[5]
-          //           <<  dut__f[6]->a->loop_6__er->in[5]
-          //           <<  dut__f[7]->a->loop_7__er->in[5]
-          //           <<  dut__f[8]->a->loop_8__er->in[5];
-          // sensitive <<  dut__f[0]->a->loop_9__er->in[5]
-
        
     }
 
     void notify_starting_flt_mntr(void){
       while (true)
       {
-        start_analysis_flt_mntr.notify();
+        // wait(3, SC_NS);
+        //   start_analysis_flt_mntr.notify(); // 3
+        // wait(50, SC_NS);
+        //   start_analysis_flt_mntr.notify(); // 53
+        // wait(50, SC_NS);
+        //   start_analysis_flt_mntr.notify(); // 103
+        // wait(50, SC_NS);
+        //   start_analysis_flt_mntr.notify(); // 153
+        // wait(50, SC_NS);
+        //   start_analysis_flt_mntr.notify(); // 203
+        // wait(50, SC_NS);
+        //   start_analysis_flt_mntr.notify(); // 253
+        // wait(50, SC_NS);
+        //   start_analysis_flt_mntr.notify(); // 303
+        // wait(50, SC_NS);
+          start_analysis_flt_mntr.notify(); // 353
         wait();
       }
       
@@ -197,9 +234,24 @@ SC_MODULE( testbench ) {
       // placeholder for adding start_analysis event notification
       while (true)
       {
-        wait(20, SC_NS);
-
-        start_analysis.notify();
+        wait(5, SC_NS);
+          start_analysis.notify(); // 5
+        for (int i =0; i < (NUMBER_OF_TRANSFORMATION*NUMBER_OF_SELECTED_BITS); i++){
+          wait(50, SC_NS);
+            start_analysis.notify(); 
+        }
+        // wait(50, SC_NS);
+        //   start_analysis.notify(); // 105
+        // wait(50, SC_NS);
+        //   start_analysis.notify(); // 155
+        // wait(50, SC_NS);
+        //   start_analysis.notify(); // 205
+        // wait(50, SC_NS);
+        //   start_analysis.notify(); // 255
+        // wait(50, SC_NS);
+        //   start_analysis.notify(); // 305
+        // wait(50, SC_NS);
+        //   start_analysis.notify(); // 355
         wait();
       }
     }
@@ -215,7 +267,7 @@ SC_MODULE( testbench ) {
             wait();
         }                
     }
-    void encrypted_f1_assignment(void){ 
+    void encrypted_faulty_assignment(void){ 
         while(true) {
             sc_lv<128> encrypted_lv_f_temp;
             for (int j = 0; j < NUMBER_OF_DUT_INSTANCES; j++){
@@ -254,14 +306,14 @@ SC_MODULE( testbench ) {
 
     void signaling(void){
       enable.write(SC_LOGIC_0);
-      sc_core::wait(10, SC_NS);
+      sc_core::wait(SC_ZERO_TIME);
 
       str2logic_array("00000000000100010010001000110011010001000101010101100110011101111000100010011001101010101011101111001100110111011110111011111111", in128);
       str2logic_array("00000000000000010000001000000011000001000000010100000110000001110000100000001001000010100000101100001100000011010000111000001111", key128);
       str2logic_array("01101001110001001110000011011000011010100111101100000100001100001101100011001101101101111000000001110000101101001100010101011010", expected128);
-      sc_core::wait(10, SC_NS);
+      sc_core::wait(1, SC_NS);
       enable.write(SC_LOGIC_1);
-      sc_core::wait(10, SC_NS);
+      sc_core::wait(1000, SC_NS);
       enable.write(SC_LOGIC_0);
       sc_core::wait(10, SC_NS);
     }

@@ -89,7 +89,7 @@ public:
     phase.get_objection()->set_drain_time(this, drain_time);
 
     SC_FORK
-      sc_core::sc_spawn(sc_bind(&rl_test::caffeinate, this, 200.0, &phase)),
+      sc_core::sc_spawn(sc_bind(&rl_test::caffeinate, this, 5000.0, &phase)),
     SC_JOIN
   }
 

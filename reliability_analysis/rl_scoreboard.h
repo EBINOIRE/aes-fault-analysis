@@ -171,10 +171,10 @@ void rl_scoreboard::reliability_analysis(const genericDataItem& trans)
         analyze_output();
         
         // clear all lists 
-        // input_list.clear();
-        // goldenOutput_list.clear();
-        // faultyOutput_list.clear();
-        // fault_list.clear();
+        input_list.clear();
+        goldenOutput_list.clear();
+        faultyOutput_list.clear();
+        fault_list.clear();
       }
     }
   } else if (trans.auxInfoInt == 1){ // if transaction belongs to faulty output
@@ -229,6 +229,8 @@ bool rl_scoreboard::analyze_output(void)
     std::cout << "| DUT Name     |         Faulty Sig           |  Difference   |   Value (Bin)                        |" << std::endl;
     std::cout << "+--------------+------------------------------------------------+-------------+" << std::endl;
     std::cout << "| Golden Out   |                              |" << "       0       | " << goldenOutput_value << std::endl;
+    std::cout << "+--------------+------------------------------------------------+-------------+" << std::endl;
+    std::cout << "| @ Time       |                              | " << sc_time_stamp() << std::endl;
     std::cout << "+--------------+------------------------------------------------+-------------+" << std::endl;
   
   int dut_enumerate = 0;
