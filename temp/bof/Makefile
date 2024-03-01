@@ -1,0 +1,62 @@
+
+TARGET ?= main
+OBJS ?= $(TARGET).c
+
+MAKE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
+MAKE_DIR := $(dir $(MAKE_PATH))
+S19 := $(MAKE_DIR)$(TARGET).s19
+MEM_OUT := $(MAKE_DIR)$(TARGET).txt
+
+C_FLAGS = -O0 -march=rv32imzicsr -mabi=ilp32 -Wa,-march=rv32imzicsr -Wextra -Wall -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -fdata-sections -ffunction-sections -fdiagnostics-color=always
+ASM_FLAGS = -O0 -march=rv32imzicsr -mabi=ilp32 -Wa,-march=rv32imzicsr -Wextra -Wall -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -fdata-sections -ffunction-sections -fdiagnostics-color=always -DBOOT_M
+
+.PHONY:all
+all: clean mkdir build $(TARGET).txt
+
+.PHONY:with_rfg
+with_rfg: clean mkdir build_with_rfg $(TARGET).txt
+
+.PHONY: build
+build: $(TARGET)
+$(TARGET): $(OBJS)
+	riscv64-unknown-elf-gcc $(ASM_FLAGS) -o obj/crt0.boot_M.S.o -c boot/crt0.boot_M.S
+	riscv64-unknown-elf-gcc $(C_FLAGS) -o obj/$(TARGET).c.s -S $(TARGET).c
+	riscv64-unknown-elf-gcc -O0 -march=rv32imzicsr -mabi=ilp32 -Wa,-march=rv32imzicsr -Wextra -Wall -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -fdata-sections -ffunction-sections -fdiagnostics-color=always -Wl,-headerpad_max_install_names -Tboot/link.riscv.ld -nostartfiles -Wl,--gc-sections -lm obj/$(TARGET).c.s obj/crt0.boot_M.S.o -o $(TARGET).elf
+	riscv64-unknown-elf-objcopy --srec-len 1 --output-target=srec $(TARGET).elf $(TARGET).s19
+	riscv64-unknown-elf-objdump -h $(TARGET).elf > dump/dump_headers.txt
+	riscv64-unknown-elf-objdump -D $(TARGET).elf > dump/dump.txt
+	riscv64-unknown-elf-objdump -d $(TARGET).elf > dump/dump_exec.txt
+
+.PHONY: build_with_rfg
+build_with_rfg:
+	riscv64-unknown-elf-gcc $(ASM_FLAGS) -o obj/crt0.boot_M.S.o -c boot/crt0.boot_M.S
+	riscv64-unknown-elf-gcc $(C_FLAGS) -o obj/$(TARGET).c.s -S $(TARGET).c
+	python3 /Users/ebinouri/Documents/UNi/RISCV/AFTAB/codes/return_flow_guard/return_flow_guard.py obj/$(TARGET).c.s obj/$(TARGET)_rfg.c.s
+	riscv64-unknown-elf-gcc -O0 -march=rv32imzicsr -mabi=ilp32 -Wa,-march=rv32imzicsr -Wextra -Wall -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -fdata-sections -ffunction-sections -fdiagnostics-color=always -Wl,-headerpad_max_install_names -Tboot/link.riscv.ld -nostartfiles -Wl,--gc-sections -lm obj/$(TARGET)_rfg.c.s obj/crt0.boot_M.S.o -o $(TARGET).elf
+	riscv64-unknown-elf-objcopy --srec-len 1 --output-target=srec $(TARGET).elf $(TARGET).s19
+	riscv64-unknown-elf-objdump -h $(TARGET).elf > dump/dump_headers.txt
+	riscv64-unknown-elf-objdump -D $(TARGET).elf > dump/dump.txt
+	riscv64-unknown-elf-objdump -d $(TARGET).elf > dump/dump_exec.txt
+
+
+$(TARGET).txt: $(TARGET).s19
+	python3 /Users/ebinouri/Documents/UNi/RISCV/AFTAB/codes/s19_to_bin/s19_to_bin.py $(S19) $(MEM_OUT)
+
+.PHONY: run
+run:
+	spike --isa=rv64imafdc -d pk $(TARGET)
+
+.PHONY: mkdir
+mkdir: 
+	mkdir obj
+	mkdir dump
+
+.PHONY: clean
+clean:
+	rm -rf $(TARGET)
+	rm -rf $(TARGET).s19
+	rm -rf $(TARGET).txt
+	rm -rf $(TARGET).s
+	rm -rf $(TARGET).elf
+	rm -Rf obj
+	rm -Rf dump
