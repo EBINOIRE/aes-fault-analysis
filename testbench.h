@@ -135,23 +135,15 @@ SC_MODULE( testbench ) {
             if (transformation_iter == SUBBYTES){
               for (int bit_iter = 0; bit_iter < NUMBER_OF_SELECTED_BITS; bit_iter++){
                 flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[dut_iter]->a->er[round_iter]->afterSubBytes[bit_iter], ("subbyte__r_"+std::to_string(static_cast<unsigned long long>(round_iter))+"__bit_"+std::to_string(static_cast<unsigned long long>(bit_iter))+"__dut_"+std::to_string(static_cast<unsigned long long>(dut_iter))+"_").c_str());
-                // dut_iter = dut_iter + 1;
               }
             } else if (transformation_iter == SHIFTROWS){
               for (int bit_iter = 0; bit_iter < NUMBER_OF_SELECTED_BITS; bit_iter++){
                 flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[dut_iter]->a->er[round_iter]->afterShiftRows[bit_iter], ("shiftrow__r_"+std::to_string(static_cast<unsigned long long>(round_iter))+"__bit_"+std::to_string(static_cast<unsigned long long>(bit_iter))+"__dut_"+std::to_string(static_cast<unsigned long long>(dut_iter))+"_").c_str());
-                // dut_iter = dut_iter + 1;
               }
             } else if (transformation_iter == MIXCOLUMNS){
               for (int bit_iter = 0; bit_iter < NUMBER_OF_SELECTED_BITS; bit_iter++){
                 flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[dut_iter]->a->er[round_iter]->afterMixColumns[bit_iter], ("mixcolumn__r_"+std::to_string(static_cast<unsigned long long>(round_iter))+"__bit_"+std::to_string(static_cast<unsigned long long>(bit_iter))+"__dut_"+std::to_string(static_cast<unsigned long long>(dut_iter))+"_").c_str());
-                // dut_iter = dut_iter + 1;
               }
-            // } else if (transformation_iter == ADDROUNDKEY){
-              // for (int bit_iter = 0; bit_iter < NUMBER_OF_SELECTED_BITS; bit_iter++){
-              //   flt_reg->add_faultableGDI<sc_signal<sc_dt::sc_logic, SC_MANY_WRITERS>>(dut__f[dut_iter]->a->er[round_iter]->afterAddroundKey[bit_iter*20], ("addroundkey__r_"+std::to_string(static_cast<unsigned long long>(round_iter))+"__bit_"+std::to_string(static_cast<unsigned long long>(bit_iter*20))+"__dut_"+std::to_string(static_cast<unsigned long long>(dut_iter))+"_").c_str());
-              //   // dut_iter = dut_iter + 1;
-              // }
             }
           }
                 dut_iter = dut_iter + 1;
@@ -159,9 +151,8 @@ SC_MODULE( testbench ) {
         
         // group signals  
         // placeholder for categorizing signals
-        // vif->mark_as_input("ci");
         vif->mark_as_goldenOutput("encrypted");
-        //********
+        // Adding faulty output
         for (int j = 0; j < NUMBER_OF_DUT_INSTANCES; j++){
           vif->mark_as_faultyOutput(("encrypted_dut_"+std::to_string(static_cast<unsigned long long>(j))+"_").c_str());
         }
